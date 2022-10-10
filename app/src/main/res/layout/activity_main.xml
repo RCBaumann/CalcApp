@@ -142,7 +142,7 @@
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/numero_ponto"
+            android:id="@+id/ponto"
             style="@style/btn_numbers"
             android:text="." />
 
