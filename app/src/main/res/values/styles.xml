@@ -12,13 +12,13 @@
     </style>
     
     <style name="btn_operators" parent="btn_container">
-        <item name="android:backgroundTint">@color/red</item>
+        <item name="android:background">@drawable/btn_operator_click</item>
         <item name="android:textColor">@color/white</item>
     </style>
     
     <style name="btn_numbers" parent="btn_container">
-        <item name="android:backgroundTint">@color/white</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/btn_number_click</item>
+        <item name="android:textColor">@color/black</item>
     </style>
     
 </resources>
