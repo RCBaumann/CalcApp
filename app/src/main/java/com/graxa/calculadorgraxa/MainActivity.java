@@ -13,6 +13,7 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    //Criar objetos para recuperar os IDs
     private Button numeroZero,numeroUm,numeroDois,numeroTres,numeroQuatro,numeroCinco,numeroSeis,
             numeroSete,numeroOito,numeroNove,ponto,soma,subtracao,divisao,limpar,multiplicacao,igual;
 
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         iniciarComponentes();
         getSupportActionBar().hide();
 
+        //Recupera os eventos de click
         numeroZero.setOnClickListener(this);
         numeroUm.setOnClickListener(this);
         numeroDois.setOnClickListener(this);
@@ -44,56 +46,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         multiplicacao.setOnClickListener(this);
         divisao.setOnClickListener(this);
 
-        limpar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        limpar.setOnClickListener(view -> {
 
-                txtExpressao.setText("");
-                txtResultado.setText("");
-            }
+            txtExpressao.setText("");
+            txtResultado.setText("");
         });
 
-        backspace.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        backspace.setOnClickListener(view -> {
 
-                TextView expressao = findViewById(R.id.txt_expressao);
-                String numeros = expressao.getText().toString();
+            TextView expressao = findViewById(R.id.txt_expressao);
+            String numeros = expressao.getText().toString();
 
-                if (!numeros.isEmpty()) {
+            if (!numeros.isEmpty()) {
 
-                    byte var0 = 0;
-                    int var1 = numeros.length()-1;
-                    String txtExpressao = numeros.substring(var0,var1);
-                    expressao.setText(txtExpressao);
-                }
-                txtResultado.setText(" ");
+                int var0 = 0;
+                int var1 = numeros.length()-1;
+
+                String txtExpressao = numeros.substring(var0,var1);
+                expressao.setText(txtExpressao);
             }
+            txtResultado.setText(" ");
         });
 
-        igual.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        //botão de igual utliza a lib net.objecthunter para fazer as operações
+        igual.setOnClickListener(view -> {
 
-                try {
-                    Expression expressao = new ExpressionBuilder(txtExpressao.getText().toString()).build();
-                    double resultado = expressao.evaluate();
-                    long longResult = (long) resultado;
 
-                    if (resultado == (double) longResult){
-                        txtResultado.setText((CharSequence) String.valueOf(longResult));
-                    } else {
-                        txtResultado.setText((CharSequence) String.valueOf(resultado));
-                    }
+                Expression expressao = new ExpressionBuilder(txtExpressao.getText().toString()).build();
+                double resultado = expressao.evaluate();
+                long longResult = (long) resultado;
 
-                }catch (Exception e) {
-                    System.out.println("Error");
+                if (resultado == (double) longResult){
+                    txtResultado.setText(String.valueOf(longResult));
+                } else {
+                    txtResultado.setText(String.valueOf(resultado));
                 }
-            }
         });
 
     }
 
+    //Vincula os botões aos ids do xml
     private void iniciarComponentes(){
         ponto         = findViewById(R.id.ponto);
         numeroZero    = findViewById(R.id.numero_zero);
@@ -117,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         txtResultado  = findViewById(R.id.txt_resultado);
     }
 
+    //Expressão é a conta em si
     public void addExpressao(String insert_num, boolean clear_inf) {
         if (txtResultado.getText().equals("")) {
             txtExpressao.setText(" ");
@@ -131,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    //Coleta o click dos botões e adiciona os valor
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
