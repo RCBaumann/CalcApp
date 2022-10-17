@@ -1,0 +1,32 @@
+- APPEND 
+Método que acrescenta uma string no objeto (getText()) capturada pelo click do botão
+
+- OnClickListener é uma Interface (o que é uma interface?) e precisa ser implementada para poder utilizar o metodo onClick
+
+@Override o que é?
+sobescrita de metodo
+
+view w get id vamos recuperar o id do botão clicado
+
+addExpressão é um metdod com dois parãmetros (String e um boolean), e por isso eu preciso passar os valores para estes parametros
+
+numeroZero.setOnClickListener(this);
+vai recupara o valor do click a partir do contexto atual
+
+o que é uma View?
+true e falso do clear _inf
+
+
+backspace
+substring precisa de 2 numeros inteiros
+metodo length pega todo o tamanho da variavel e diminui 1
+
+evaluate vai avaliar a expressão e fazer os tratamentos do calculo
+
+a classe Expression é responsavel por todos os caulculos (por isso o multiplicar precisa ser *)
+e precisa ser instanciada na clase Main
+
+exp4j é uma biblioteca que pode ser usada para avaliar expressões e funções matemáticas. 
+ela avalia uma expressão matemática fornecida no formato String
+
+
