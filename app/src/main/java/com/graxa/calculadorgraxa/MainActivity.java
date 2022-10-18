@@ -20,12 +20,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView txtResultado,txtExpressao;
     private ImageView backspace;
 
-    private final int tipoNumero = 1;
-    private final int tipoOperador = 2;
-    private final int tipoSeparador = 3;
+    int tipoNumero = 1;
+    int tipoOperador = 2;
+    int tipoSeparador = 3;
 
     boolean permiteNumero = true;
-    boolean permiteOperador = false;
+    boolean permiteOperador = true;
     boolean permiteSeparador = true;
 
     @Override
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             txtExpressao.setText("");
             txtResultado.setText("");
             permiteNumero = true;
-            permiteOperador = false;
+            permiteOperador = true;
             permiteSeparador = true;
         });
 
