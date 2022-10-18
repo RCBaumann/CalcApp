@@ -11,6 +11,9 @@ import android.widget.TextView;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //Criar objetos para recuperar os IDs
@@ -20,6 +23,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView txtResultado,txtExpressao;
     private ImageView backspace;
 
+    private static final int TIPO_NUMERO = 69;
+    private static final int TIPO_OPERADOR = 79;
+    private static final int TIPO_SEPARADOR = 59;
+
+    boolean permiteNumero = true;
+    boolean permiteOperador = false;
+    boolean permiteSeparador = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             txtExpressao.setText("");
             txtResultado.setText("");
+            permiteNumero = true;
+            permiteOperador = false;
+            permiteSeparador = true;
         });
 
         backspace.setOnClickListener(view -> {
@@ -71,22 +84,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //botão de igual utliza a lib net.objecthunter para fazer as operações
         igual.setOnClickListener(view -> {
 
+                try {
+                    Expression expressao = new ExpressionBuilder(txtExpressao.getText().toString()).build();
+                    double resultado = expressao.evaluate();
+                    long longResult = (long) resultado;
 
-                Expression expressao = new ExpressionBuilder(txtExpressao.getText().toString()).build();
-                double resultado = expressao.evaluate();
-                long longResult = (long) resultado;
-
-                if (resultado == (double) longResult){
-                    txtResultado.setText(String.valueOf(longResult));
-                } else {
-                    txtResultado.setText(String.valueOf(resultado));
+                    if (resultado == (double) longResult){
+                        txtResultado.setText(String.valueOf(longResult));
+                    } else {
+                        txtResultado.setText(String.valueOf(resultado));
+                        permiteSeparador = true;
+                    }
+                } catch (Exception e){
+                    System.out.println("Erro de sintaxe");
                 }
+
         });
 
     }
 
     //Vincula os botões aos ids do xml
     private void iniciarComponentes(){
+
+//        allowedTypes.add();
+
         ponto         = findViewById(R.id.ponto);
         numeroZero    = findViewById(R.id.numero_zero);
         backspace     = findViewById(R.id.backspace);
@@ -110,17 +131,63 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //Expressão é a conta em si
-    public void addExpressao(String insert_num, boolean clear_inf) {
-        if (txtResultado.getText().equals("")) {
-            txtExpressao.setText(" ");
-        }
-        if (clear_inf) {
-            txtResultado.setText(" ");
-            txtExpressao.append(insert_num);
-        }else {
-            txtExpressao.append(txtResultado.getText());
-            txtExpressao.append(insert_num);
-            txtResultado.setText(" ");
+//    public void addExpressao(String insert_num, boolean clear_inf) {
+//        if (txtResultado.getText().equals("")) {
+//            txtExpressao.setText(" ");
+//        }
+//        if (clear_inf) {
+//            txtResultado.setText(" ");
+//            txtExpressao.append(insert_num);
+//        }else {
+//            txtExpressao.append(txtResultado.getText());
+//            txtExpressao.append(insert_num);
+//            txtResultado.setText(" ");
+//        }
+//
+//        String valorSetado = String.valueOf(txtExpressao);
+//        if(valorSetado.contains("++") || valorSetado.contains("--") || valorSetado.contains("**") || valorSetado.contains("//")){
+//            txtExpressao.setText("");
+//        }
+//    }
+    //versão wylliam
+    public void addExpressao(String insert_num, int clear_inf) {
+
+
+        if (!txtResultado.getText().equals("")) {
+
+            if (clear_inf == TIPO_NUMERO && permiteNumero) {
+                txtExpressao.append(insert_num);
+                permiteOperador = true;
+
+            } else if (clear_inf == TIPO_OPERADOR && permiteOperador) {
+                txtExpressao.setText("");
+                txtExpressao.append(txtResultado.getText());
+                txtExpressao.append(insert_num);
+                permiteOperador = false;
+                permiteSeparador = true;
+
+
+            } else if (clear_inf == TIPO_SEPARADOR && permiteSeparador) {
+                txtExpressao.append(insert_num);
+                permiteSeparador = false;
+            }
+            txtResultado.setText("");
+
+        } else {
+            if (clear_inf == TIPO_NUMERO && permiteNumero) {
+                txtExpressao.append(insert_num);
+                permiteOperador = true;
+
+            } else if (clear_inf == TIPO_OPERADOR && permiteOperador) {
+                txtExpressao.append(txtResultado.getText());
+                txtExpressao.append(insert_num);
+                permiteOperador = false;
+                permiteSeparador = true;
+
+            } else if (clear_inf == TIPO_SEPARADOR && permiteSeparador) {
+                txtExpressao.append(insert_num);
+                permiteSeparador = false;
+            }
         }
     }
 
@@ -129,49 +196,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.numero_zero:
-                addExpressao("0",true);
+                addExpressao("0", TIPO_NUMERO);
                 break;
             case R.id.numero_um:
-                addExpressao("1",true);
+                addExpressao("1", TIPO_NUMERO);
                 break;
             case R.id.numero_dois:
-                addExpressao("2",true);
+                addExpressao("2", TIPO_NUMERO);
                 break;
             case R.id.numero_tres:
-                addExpressao("3",true);
+                addExpressao("3", TIPO_NUMERO);
                 break;
             case R.id.numero_quatro:
-                addExpressao("4",true);
+                addExpressao("4", TIPO_NUMERO);
                 break;
             case R.id.numero_cinco:
-                addExpressao("5",true);
+                addExpressao("5", TIPO_NUMERO);
                 break;
             case R.id.numero_seis:
-                addExpressao("6",true);
+                addExpressao("6", TIPO_NUMERO);
                 break;
             case R.id.numero_sete:
-                addExpressao("7",true);
+                addExpressao("7", TIPO_NUMERO);
                 break;
             case R.id.numero_oito:
-                addExpressao("8",true);
+                addExpressao("8", TIPO_NUMERO);
                 break;
             case R.id.numero_nove:
-                addExpressao("9",true);
+                addExpressao("9", TIPO_NUMERO);
                 break;
             case R.id.ponto:
-                addExpressao(".",true);
+                addExpressao(".",TIPO_SEPARADOR);
                 break;
             case R.id.btn_soma:
-                addExpressao("+",false);
+                addExpressao("+", TIPO_OPERADOR);
                 break;
             case R.id.btn_subtracao:
-                addExpressao("-",false);
+                addExpressao("-", TIPO_OPERADOR);
                 break;
             case R.id.btn_multiplicacao:
-                addExpressao("*",false);
+                addExpressao("*", TIPO_OPERADOR);
                 break;
             case R.id.btn_divisao:
-                addExpressao("/",false);
+                addExpressao("/", TIPO_OPERADOR);
                 break;
 
         }
