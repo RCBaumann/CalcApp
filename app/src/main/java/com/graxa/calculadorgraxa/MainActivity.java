@@ -11,9 +11,6 @@ import android.widget.TextView;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //Criar objetos para recuperar os IDs
@@ -23,9 +20,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView txtResultado,txtExpressao;
     private ImageView backspace;
 
-    private static final int TIPO_NUMERO = 69;
-    private static final int TIPO_OPERADOR = 79;
-    private static final int TIPO_SEPARADOR = 59;
+    private final int tipoNumero = 1;
+    private final int tipoOperador = 2;
+    private final int tipoSeparador = 3;
 
     boolean permiteNumero = true;
     boolean permiteOperador = false;
@@ -93,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         txtResultado.setText(String.valueOf(longResult));
                     } else {
                         txtResultado.setText(String.valueOf(resultado));
-                        permiteSeparador = true;
+
                     }
                 } catch (Exception e){
                     System.out.println("Erro de sintaxe");
@@ -131,11 +128,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //Expressão é a conta em si
-//    public void addExpressao(String insert_num, boolean clear_inf) {
+//    public void addExpressao(String insert_num, boolean click_btn) {
 //        if (txtResultado.getText().equals("")) {
 //            txtExpressao.setText(" ");
 //        }
-//        if (clear_inf) {
+//        if (click_btn) {
 //            txtResultado.setText(" ");
 //            txtExpressao.append(insert_num);
 //        }else {
@@ -150,16 +147,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        }
 //    }
     //versão wylliam
-    public void addExpressao(String insert_num, int clear_inf) {
+    public void addExpressao(String insert_num, int click_btn) {
 
 
         if (!txtResultado.getText().equals("")) {
 
-            if (clear_inf == TIPO_NUMERO && permiteNumero) {
+            if (click_btn == tipoNumero && permiteNumero) {
                 txtExpressao.append(insert_num);
                 permiteOperador = true;
 
-            } else if (clear_inf == TIPO_OPERADOR && permiteOperador) {
+            } else if (click_btn == tipoOperador && permiteOperador) {
                 txtExpressao.setText("");
                 txtExpressao.append(txtResultado.getText());
                 txtExpressao.append(insert_num);
@@ -167,24 +164,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 permiteSeparador = true;
 
 
-            } else if (clear_inf == TIPO_SEPARADOR && permiteSeparador) {
+            } else if (click_btn == tipoSeparador && permiteSeparador) {
                 txtExpressao.append(insert_num);
                 permiteSeparador = false;
             }
             txtResultado.setText("");
 
         } else {
-            if (clear_inf == TIPO_NUMERO && permiteNumero) {
+            if (click_btn == tipoNumero && permiteNumero) {
                 txtExpressao.append(insert_num);
                 permiteOperador = true;
 
-            } else if (clear_inf == TIPO_OPERADOR && permiteOperador) {
+            } else if (click_btn == tipoOperador && permiteOperador) {
                 txtExpressao.append(txtResultado.getText());
                 txtExpressao.append(insert_num);
                 permiteOperador = false;
                 permiteSeparador = true;
 
-            } else if (clear_inf == TIPO_SEPARADOR && permiteSeparador) {
+            } else if (click_btn == tipoSeparador && permiteSeparador) {
                 txtExpressao.append(insert_num);
                 permiteSeparador = false;
             }
@@ -196,49 +193,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.numero_zero:
-                addExpressao("0", TIPO_NUMERO);
+                addExpressao("0", tipoNumero);
                 break;
             case R.id.numero_um:
-                addExpressao("1", TIPO_NUMERO);
+                addExpressao("1", tipoNumero);
                 break;
             case R.id.numero_dois:
-                addExpressao("2", TIPO_NUMERO);
+                addExpressao("2", tipoNumero);
                 break;
             case R.id.numero_tres:
-                addExpressao("3", TIPO_NUMERO);
+                addExpressao("3", tipoNumero);
                 break;
             case R.id.numero_quatro:
-                addExpressao("4", TIPO_NUMERO);
+                addExpressao("4", tipoNumero);
                 break;
             case R.id.numero_cinco:
-                addExpressao("5", TIPO_NUMERO);
+                addExpressao("5", tipoNumero);
                 break;
             case R.id.numero_seis:
-                addExpressao("6", TIPO_NUMERO);
+                addExpressao("6", tipoNumero);
                 break;
             case R.id.numero_sete:
-                addExpressao("7", TIPO_NUMERO);
+                addExpressao("7", tipoNumero);
                 break;
             case R.id.numero_oito:
-                addExpressao("8", TIPO_NUMERO);
+                addExpressao("8", tipoNumero);
                 break;
             case R.id.numero_nove:
-                addExpressao("9", TIPO_NUMERO);
+                addExpressao("9", tipoNumero);
                 break;
             case R.id.ponto:
-                addExpressao(".",TIPO_SEPARADOR);
+                addExpressao(".", tipoSeparador);
                 break;
             case R.id.btn_soma:
-                addExpressao("+", TIPO_OPERADOR);
+                addExpressao("+", tipoOperador);
                 break;
             case R.id.btn_subtracao:
-                addExpressao("-", TIPO_OPERADOR);
+                addExpressao("-", tipoOperador);
                 break;
             case R.id.btn_multiplicacao:
-                addExpressao("*", TIPO_OPERADOR);
+                addExpressao("*", tipoOperador);
                 break;
             case R.id.btn_divisao:
-                addExpressao("/", TIPO_OPERADOR);
+                addExpressao("/", tipoOperador);
                 break;
 
         }
