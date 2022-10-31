@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         iniciarComponentes();
-        getSupportActionBar().hide();
 
         //Recupera os eventos de click
         numeroZero.setOnClickListener(this);
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String txtExpressao = numeros.substring(var0,var1);
                 expressao.setText(txtExpressao);
             }
-            txtResultado.setText(" ");
+            txtResultado.setText("");
         });
 
         //botão de igual utliza a lib net.objecthunter para fazer as operações
@@ -103,8 +102,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Vincula os botões aos ids do xml
     private void iniciarComponentes(){
 
-//        allowedTypes.add();
-
         ponto         = findViewById(R.id.ponto);
         numeroZero    = findViewById(R.id.numero_zero);
         backspace     = findViewById(R.id.backspace);
@@ -128,16 +125,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //Expressão é a conta em si
-//    public void addExpressao(String insert_num, boolean click_btn) {
+//    public void addExpressao(String insertNum, boolean clickBtn) {
 //        if (txtResultado.getText().equals("")) {
 //            txtExpressao.setText(" ");
 //        }
-//        if (click_btn) {
+//        if (clickBtn) {
 //            txtResultado.setText(" ");
-//            txtExpressao.append(insert_num);
+//            txtExpressao.append(insertNum);
 //        }else {
 //            txtExpressao.append(txtResultado.getText());
-//            txtExpressao.append(insert_num);
+//            txtExpressao.append(insertNum);
 //            txtResultado.setText(" ");
 //        }
 //
@@ -147,44 +144,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        }
 //    }
     //versão wylliam
-    public void addExpressao(String insert_num, int click_btn) {
-
+    public void addExpressao(String insertNum, int clickBtn) {
 
         if (!txtResultado.getText().equals("")) {
 
-            if (click_btn == tipoNumero && permiteNumero) {
-                txtExpressao.append(insert_num);
+            if (clickBtn == tipoNumero && permiteNumero) {
+                txtExpressao.append(insertNum);
                 permiteOperador = true;
 
-            } else if (click_btn == tipoOperador && permiteOperador) {
+            } else if (clickBtn == tipoOperador && permiteOperador) {
                 txtExpressao.setText("");
                 txtExpressao.append(txtResultado.getText());
-                txtExpressao.append(insert_num);
+                txtExpressao.append(insertNum);
                 permiteOperador = false;
                 permiteSeparador = true;
 
 
-            } else if (click_btn == tipoSeparador && permiteSeparador) {
-                txtExpressao.append(insert_num);
+            } else if (clickBtn == tipoSeparador && permiteSeparador) {
+                txtExpressao.append("0"+insertNum);
                 permiteSeparador = false;
+//                txtExpressao.append(insertNum);
+
+
             }
             txtResultado.setText("");
 
         } else {
-            if (click_btn == tipoNumero && permiteNumero) {
-                txtExpressao.append(insert_num);
+            if (clickBtn == tipoNumero && permiteNumero) {
+                txtExpressao.append(insertNum);
                 permiteOperador = true;
 
-            } else if (click_btn == tipoOperador && permiteOperador) {
+            } else if (clickBtn == tipoOperador && permiteOperador) {
                 txtExpressao.append(txtResultado.getText());
-                txtExpressao.append(insert_num);
+                txtExpressao.append(insertNum);
                 permiteOperador = false;
                 permiteSeparador = true;
 
-            } else if (click_btn == tipoSeparador && permiteSeparador) {
-                txtExpressao.append(insert_num);
+            } else if (clickBtn == tipoSeparador && permiteSeparador) {
+                txtExpressao.append("0"+insertNum);
                 permiteSeparador = false;
+//                txtExpressao.append(insertNum);
+
             }
+
         }
     }
 
