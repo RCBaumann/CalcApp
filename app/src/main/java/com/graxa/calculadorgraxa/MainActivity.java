@@ -24,9 +24,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int tipoOperador = 2;
     int tipoSeparador = 3;
 
+    int ultimoTipo = 0;
+
     boolean permiteNumero = true;
     boolean permiteOperador = true;
     boolean permiteSeparador = true;
+
+    private void calculaResultado() {
+        try {
+            Expression expressao = new ExpressionBuilder(txtExpressao.getText().toString()).build();
+            double resultado = expressao.evaluate();
+            long longResult = (long) resultado;
+
+            if (resultado == (double) longResult){
+                txtResultado.setText(String.valueOf(longResult));
+            } else {
+                txtResultado.setText(String.valueOf(resultado));
+            }
+
+            //todo verificar se é nesse trecho que está apagando os valores com o ponto
+//            if(ultimoTipo == tipoSeparador){
+//
+//                StringBuilder expressaoBuilder = new StringBuilder(txtExpressao.getText());
+//                int lastIndex = expressaoBuilder.length()-1;
+//
+//                expressaoBuilder.deleteCharAt(lastIndex);
+//                txtExpressao.setText(expressaoBuilder.toString());
+//
+//            }
+
+        } catch (Exception e){
+            System.out.println("Erro de sintaxe");
+        }
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             permiteNumero = true;
             permiteOperador = true;
             permiteSeparador = true;
+            ultimoTipo = 0;
         });
 
         backspace.setOnClickListener(view -> {
@@ -79,22 +112,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //botão de igual utliza a lib net.objecthunter para fazer as operações
         igual.setOnClickListener(view -> {
-
-                try {
-                    Expression expressao = new ExpressionBuilder(txtExpressao.getText().toString()).build();
-                    double resultado = expressao.evaluate();
-                    long longResult = (long) resultado;
-
-                    if (resultado == (double) longResult){
-                        txtResultado.setText(String.valueOf(longResult));
-                    } else {
-                        txtResultado.setText(String.valueOf(resultado));
-
-                    }
-                } catch (Exception e){
-                    System.out.println("Erro de sintaxe");
-                }
-
+            calculaResultado();
         });
 
     }
@@ -161,11 +179,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             } else if (clickBtn == tipoSeparador && permiteSeparador) {
-                txtExpressao.append("0"+insertNum);
                 permiteSeparador = false;
-//                txtExpressao.append(insertNum);
-
-
+                if(insertNum.startsWith(".")){
+                    txtExpressao.append("0"+insertNum);
+                }else if (clickBtn == tipoNumero){
+                    insertNum.startsWith("0");
+                    insertNum.replace("0",".");
+                }
             }
             txtResultado.setText("");
 
@@ -175,19 +195,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 permiteOperador = true;
 
             } else if (clickBtn == tipoOperador && permiteOperador) {
-                txtExpressao.append(txtResultado.getText());
+                if(ultimoTipo == tipoSeparador){
+
+                    StringBuilder expressaoBuilder = new StringBuilder(txtExpressao.getText());
+                    int lastIndex = expressaoBuilder.length()-1;
+
+                    expressaoBuilder.deleteCharAt(lastIndex);
+                    txtExpressao.setText(expressaoBuilder.toString());
+
+                }
                 txtExpressao.append(insertNum);
                 permiteOperador = false;
                 permiteSeparador = true;
 
+
             } else if (clickBtn == tipoSeparador && permiteSeparador) {
-                txtExpressao.append("0"+insertNum);
+                if(ultimoTipo != tipoNumero){
+                    txtExpressao.append("0");
+                }
+                txtExpressao.append(insertNum);
                 permiteSeparador = false;
-//                txtExpressao.append(insertNum);
-
             }
-
         }
+        ultimoTipo = clickBtn;
     }
 
     //Coleta o click dos botões e adiciona os valor
@@ -239,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_divisao:
                 addExpressao("/", tipoOperador);
                 break;
-
         }
+        calculaResultado();
     }
 }
