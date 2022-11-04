@@ -42,17 +42,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 txtResultado.setText(String.valueOf(resultado));
             }
 
-            //todo verificar se é nesse trecho que está apagando os valores com o ponto
-//            if(ultimoTipo == tipoSeparador){
-//
-//                StringBuilder expressaoBuilder = new StringBuilder(txtExpressao.getText());
-//                int lastIndex = expressaoBuilder.length()-1;
-//
-//                expressaoBuilder.deleteCharAt(lastIndex);
-//                txtExpressao.setText(expressaoBuilder.toString());
-//
-//            }
-
         } catch (Exception e){
             System.out.println("Erro de sintaxe");
         }
@@ -112,7 +101,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //botão de igual utliza a lib net.objecthunter para fazer as operações
         igual.setOnClickListener(view -> {
-            calculaResultado();
+            txtExpressao.setText(txtResultado.getText().toString());
+            txtResultado.setText("");
+
         });
 
     }
@@ -161,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            txtExpressao.setText("");
 //        }
 //    }
-    //versão wylliam
+
     public void addExpressao(String insertNum, int clickBtn) {
 
         if (!txtResultado.getText().equals("")) {
@@ -179,14 +170,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             } else if (clickBtn == tipoSeparador && permiteSeparador) {
-                permiteSeparador = false;
-                if(insertNum.startsWith(".")){
-                    txtExpressao.append("0"+insertNum);
-                }else if (clickBtn == tipoNumero){
-                    insertNum.startsWith("0");
-                    insertNum.replace("0",".");
+                if(ultimoTipo != tipoNumero){
+                    txtExpressao.append("0");
                 }
+                txtExpressao.append(insertNum);
+                permiteSeparador = false;
             }
+
             txtResultado.setText("");
 
         } else {
