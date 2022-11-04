@@ -1,6 +1,7 @@
 package com.graxa.calculadorgraxa;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +11,9 @@ import android.widget.TextView;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -24,26 +28,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int tipoOperador = 2;
     int tipoSeparador = 3;
 
-    int ultimoTipo = 0;
-
-    boolean permiteNumero = true;
-    boolean permiteOperador = true;
-    boolean permiteSeparador = true;
-
     private void calculaResultado() {
         try {
-            Expression expressao = new ExpressionBuilder(txtExpressao.getText().toString()).build();
+            String expressaoStr = txtExpressao.getText().toString();
+            if(getUltimoTipo(expressaoStr) == tipoOperador){
+                expressaoStr = expressaoStr.substring(0,expressaoStr.length()-1);
+            }
+            Expression expressao = new ExpressionBuilder(expressaoStr).build();
             double resultado = expressao.evaluate();
-            long longResult = (long) resultado;
-
-            if (resultado == (double) longResult){
-                txtResultado.setText(String.valueOf(longResult));
-            } else {
-                txtResultado.setText(String.valueOf(resultado));
+            double roundResultado = Math.round(resultado * 1000000000.0) / 1000000000.0;
+            String resultadoStr = String.valueOf(roundResultado);
+            String[] resultadoSplit = resultadoStr.split("[.]");
+            String inteiro = resultadoSplit [0];
+            String decimal = resultadoSplit [1];
+            if(decimal.equals("0")){
+                txtResultado.setText(inteiro);
+            }else {
+                txtResultado.setText(resultadoStr);
             }
 
+
         } catch (Exception e){
-            System.out.println("Erro de sintaxe");
+            e.printStackTrace();
+            System.out.println("Erro na expressão");
         }
 
     }
@@ -77,10 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             txtExpressao.setText("");
             txtResultado.setText("");
-            permiteNumero = true;
-            permiteOperador = true;
-            permiteSeparador = true;
-            ultimoTipo = 0;
+
         });
 
         backspace.setOnClickListener(view -> {
@@ -97,16 +101,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 expressao.setText(txtExpressao);
             }
             txtResultado.setText("");
+
         });
 
         //botão de igual utliza a lib net.objecthunter para fazer as operações
         igual.setOnClickListener(view -> {
-            txtExpressao.setText(txtResultado.getText().toString());
+            String resultado = txtResultado.getText().toString();
+            if(resultado.isEmpty()){
+                return;
+            }
+            txtExpressao.setText(resultado);
             txtResultado.setText("");
 
         });
+    }
+
+    private String getUltimoNumero (String expressao){
+        if(expressao.equals("")){
+            return "";
+        }
+        String ultimoNumero = "";
+        String[] expressaoSplit = expressao.split("[-+*/]");
+
+        ultimoNumero = expressaoSplit[expressaoSplit.length-1];
+        System.out.println(ultimoNumero);
+        return ultimoNumero;
 
     }
+
+//    private String getUltimoNumero (String expressao){
+//        String ultimoNumero = expressao;
+//        //exemplo
+////        ultimoNumero = getUltimoNumeroPorOperador(ultimoNumero,"+");
+////        ultimoNumero = getUltimoNumeroPorOperador(ultimoNumero,"-");
+////        ultimoNumero = getUltimoNumeroPorOperador(ultimoNumero,"*");
+////        ultimoNumero = getUltimoNumeroPorOperador(ultimoNumero,"/");
+////
+//        String[] operadores = {"+","-","/","*"};
+//        for (int i = 0; i < operadores.length; i ++){
+//            ultimoNumero = getUltimoNumeroPorOperador(ultimoNumero,operadores[i]);
+//        }
+//        return ultimoNumero;
+//
+//    }
+
 
     //Vincula os botões aos ids do xml
     private void iniciarComponentes(){
@@ -133,133 +171,85 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         txtResultado  = findViewById(R.id.txt_resultado);
     }
 
-    //Expressão é a conta em si
-//    public void addExpressao(String insertNum, boolean clickBtn) {
-//        if (txtResultado.getText().equals("")) {
-//            txtExpressao.setText(" ");
-//        }
-//        if (clickBtn) {
-//            txtResultado.setText(" ");
-//            txtExpressao.append(insertNum);
-//        }else {
-//            txtExpressao.append(txtResultado.getText());
-//            txtExpressao.append(insertNum);
-//            txtResultado.setText(" ");
-//        }
-//
-//        String valorSetado = String.valueOf(txtExpressao);
-//        if(valorSetado.contains("++") || valorSetado.contains("--") || valorSetado.contains("**") || valorSetado.contains("//")){
-//            txtExpressao.setText("");
-//        }
-//    }
+
+    public int getUltimoTipo(String expressao){
+        String caractere = "";
+        if(expressao.length() >0){
+            caractere = String.valueOf(expressao.charAt(expressao.length()-1));
+        }
+        return getTipo(caractere);
+    }
+
 
     public void addExpressao(String insertNum, int clickBtn) {
 
-        if (!txtResultado.getText().equals("")) {
-
-            if (clickBtn == tipoNumero && permiteNumero) {
-                txtExpressao.append(insertNum);
-                permiteOperador = true;
-
-            } else if (clickBtn == tipoOperador && permiteOperador) {
-                txtExpressao.setText("");
-                txtExpressao.append(txtResultado.getText());
-                txtExpressao.append(insertNum);
-                permiteOperador = false;
-                permiteSeparador = true;
-
-
-            } else if (clickBtn == tipoSeparador && permiteSeparador) {
-                if(ultimoTipo != tipoNumero){
-                    txtExpressao.append("0");
-                }
-                txtExpressao.append(insertNum);
-                permiteSeparador = false;
-            }
-
-            txtResultado.setText("");
-
-        } else {
-            if (clickBtn == tipoNumero && permiteNumero) {
-                txtExpressao.append(insertNum);
-                permiteOperador = true;
-
-            } else if (clickBtn == tipoOperador && permiteOperador) {
-                if(ultimoTipo == tipoSeparador){
-
-                    StringBuilder expressaoBuilder = new StringBuilder(txtExpressao.getText());
-                    int lastIndex = expressaoBuilder.length()-1;
-
-                    expressaoBuilder.deleteCharAt(lastIndex);
-                    txtExpressao.setText(expressaoBuilder.toString());
-
-                }
-                txtExpressao.append(insertNum);
-                permiteOperador = false;
-                permiteSeparador = true;
-
-
-            } else if (clickBtn == tipoSeparador && permiteSeparador) {
-                if(ultimoTipo != tipoNumero){
-                    txtExpressao.append("0");
-                }
-                txtExpressao.append(insertNum);
-                permiteSeparador = false;
-            }
+        int ultimoTipo = getUltimoTipo(txtExpressao.getText().toString());
+        boolean permiteOperador = true;
+        if(ultimoTipo == tipoOperador) {
+            permiteOperador = false;
+        } else if(ultimoTipo == 0 && insertNum.equals("/") ){
+            permiteOperador = false;
+        }else if(ultimoTipo == 0 && insertNum.equals("*") ){
+            permiteOperador = false;
         }
-        ultimoTipo = clickBtn;
+
+        boolean permiteSeparador = true;
+        String ultimoNumero = getUltimoNumero(txtExpressao.getText().toString());
+        if(ultimoTipo != tipoOperador){
+            permiteSeparador = !ultimoNumero.contains(".");
+        }
+
+        if (clickBtn == tipoNumero) {
+            txtExpressao.append(insertNum);
+
+        } else if (clickBtn == tipoOperador && permiteOperador) {
+            if(ultimoTipo == tipoSeparador){
+                txtExpressao.append("0");
+            }
+            txtExpressao.append(insertNum);
+
+        } else if (clickBtn == tipoSeparador && permiteSeparador) {
+            if(ultimoTipo != tipoNumero){
+                txtExpressao.append("0");
+            }
+            txtExpressao.append(insertNum);
+        }
     }
 
     //Coleta o click dos botões e adiciona os valor
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.numero_zero:
-                addExpressao("0", tipoNumero);
-                break;
-            case R.id.numero_um:
-                addExpressao("1", tipoNumero);
-                break;
-            case R.id.numero_dois:
-                addExpressao("2", tipoNumero);
-                break;
-            case R.id.numero_tres:
-                addExpressao("3", tipoNumero);
-                break;
-            case R.id.numero_quatro:
-                addExpressao("4", tipoNumero);
-                break;
-            case R.id.numero_cinco:
-                addExpressao("5", tipoNumero);
-                break;
-            case R.id.numero_seis:
-                addExpressao("6", tipoNumero);
-                break;
-            case R.id.numero_sete:
-                addExpressao("7", tipoNumero);
-                break;
-            case R.id.numero_oito:
-                addExpressao("8", tipoNumero);
-                break;
-            case R.id.numero_nove:
-                addExpressao("9", tipoNumero);
-                break;
-            case R.id.ponto:
-                addExpressao(".", tipoSeparador);
-                break;
-            case R.id.btn_soma:
-                addExpressao("+", tipoOperador);
-                break;
-            case R.id.btn_subtracao:
-                addExpressao("-", tipoOperador);
-                break;
-            case R.id.btn_multiplicacao:
-                addExpressao("*", tipoOperador);
-                break;
-            case R.id.btn_divisao:
-                addExpressao("/", tipoOperador);
-                break;
+        AppCompatButton button = (AppCompatButton)view;
+        String caractere = button.getText().toString();
+        if(caractere.equals("X")){
+            caractere = "*";
         }
+        addExpressao(caractere,getTipo(caractere));
         calculaResultado();
+    }
+
+
+    public int getTipo(String caractere) {
+        switch (caractere) {
+            case "0":
+            case "1":
+            case "2":
+            case "3":
+            case "4":
+            case "5":
+            case "6":
+            case "7":
+            case "8":
+            case "9":
+                return tipoNumero;
+            case "+":
+            case "-":
+            case "/":
+            case "*":
+                return tipoOperador;
+            case ".":
+                return tipoSeparador;
+        }
+        return 0;
     }
 }
